@@ -1,0 +1,118 @@
+.App {
+  text-align: center;
+}
+
+body {
+  background-color: #0c061e !important;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+h1 {
+  font-family: 'Barlow';
+  font-weight: 600;
+  color: #c4adee;
+}
+
+@font-face {
+  font-family: 'Barlow'; /* Name of the font */
+  src: url('./Barlow-Medium.woff2') format('woff2');
+  /* You can also provide additional font formats like woff or ttf here */
+  /* For better browser compatibility, include different formats */
+}
+
+.rectangle-container {
+  display: flex;
+    flex-direction: row; /* Arrange rectangles in a row */
+    justify-content: center; /* Center the row horizontally */
+    align-items: center; /* Center the row vertically */
+    width: 100%;
+}
+
+.rectangle {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rectangle img {
+  max-width: 100%;
+  max-height: 100%;
+  border: 1px solid #c4adee
+}
+
+.image-text {
+  position: absolute;
+  bottom: 20%; /* Position text 30% from the bottom */
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 28px;
+  color: #c4adee;
+}
+
+.image-text-24 {
+  position: absolute;
+  bottom: 10%; /* Position text 30% from the bottom */
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 28px;
+  color: #c4adee;
+}
+
+.overlay-table {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.overlay-table td {
+  padding: 5px;
+  text-align: center;
+  font-size: 28px;
+  color: #c4adee;
+}

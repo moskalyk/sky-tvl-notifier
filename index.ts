@@ -7,15 +7,18 @@ class SkyHealth {
   dataArray;
   metadataClient;
   from;
+  numbers;
 
   constructor({ twilio_sid, twilio_auth_token, from, mode }) {
     this.client = twilio(twilio_sid, twilio_auth_token);
     this.dataArray = []
     this.metadataClient = new SequenceMetadataClient()
     this.from = from
+    this.numbers = []
   }
 
   start(numbers: string[], time: number) {
+    this.numbers.push(numbers)
     setInterval(async () => {
       try {
         if(this.dataArray.length > 3) this.dataArray.shift()
@@ -25,7 +28,7 @@ class SkyHealth {
         const percentageChangeArray: any = this.calculatePercentageChange(this.dataArray);
         console.log(percentageChangeArray)
         if (Object.keys(percentageChangeArray).length > 0) {
-          numbers.map((number: string) => {
+          this.numbers.map((number: string) => {
             const table = `
                 Attribute   |   Average Change
             -----------|------------------

@@ -15,10 +15,12 @@ import SkyHealth from './index';
     })
 
     // params
-    const phoneNumber = '';
+    const phoneNumber = '+16479140157';
     const time = 60000*60
 
     // start timer
     sky.start([phoneNumber], time)
+
+    sky.numbers.push(phoneNumber)
 
 })()
