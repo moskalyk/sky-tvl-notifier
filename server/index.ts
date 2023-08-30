@@ -16,7 +16,7 @@ const auth = async (wallet: string, ethAuthProofString: string) => {
 
     console.log(isValid)
     if(!isValid) throw new Error('invalid wallet auth')
-    return isValid
+    return true
 }
 
 export {

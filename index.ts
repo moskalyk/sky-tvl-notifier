@@ -1,6 +1,47 @@
+import * as dotenv from "dotenv";
+
 import { SequenceMetadataClient } from '@0xsequence/metadata'
 import { request } from "graphql-request";
 import twilio from "twilio";  
+
+dotenv.config();
+
+import mongoose from 'mongoose';
+import { Stat } from './server/models/Stat'
+
+var username = 'mm';
+var password = process.env.PASSWORD;
+var hosts = 'lon5-c14-0.mongo.objectrocket.com:43793,lon5-c14-1.mongo.objectrocket.com:43793,lon5-c14-2.mongo.objectrocket.com:43793';
+var database = 'erc721';
+var options = '?replicaSet=faf5ae88bece406282f758108bb2641e';
+var connectionString = 'mongodb://' + username + ':' + password + '@' + hosts + '/' + database + options;
+
+// Connect to the remote MongoDB database
+console.log(connectionString)
+mongoose.connect(connectionString)
+.then(() => {
+  console.log('now here')
+    console.log('Connected to MongoDB');
+})
+.catch(err => {
+  console.log('here')
+    console.error('Error connecting to MongoDB:', err);
+});
+
+function getPriceWithDeviation() {
+  const millisecondsInCycle = 2555200 * 1000; // 2555200 seconds to milliseconds
+  const currentTime = Date.now();
+  const timeDifference = currentTime - 1689618660000;
+
+  // Calculate the phase of the sine wave (ranging from 0 to 2 * Math.PI)
+  const phase = (Math.PI * timeDifference) / millisecondsInCycle;
+
+  // Calculate the deviation factor using the sine function (oscillating between -1 and 1)
+  const deviationFactor = Math.sin(phase);
+
+  // Calculate the deviation amount
+  return 50 + 50 * deviationFactor;
+}
 
 class SkyHealth {
   client
@@ -18,25 +59,64 @@ class SkyHealth {
   }
 
   start(numbers: string[], time: number) {
-    this.numbers.push(numbers)
+    this.numbers.push(...numbers)
     setInterval(async () => {
       try {
         if(this.dataArray.length > 3) this.dataArray.shift()
         const tvl = await this.getTVLData();
         const prisms = await this.fitTVLtoPrisms(tvl)
-        this.dataArray.push({sky: this.aggregateTVLByPrism(prisms)})
-        const percentageChangeArray: any = this.calculatePercentageChange(this.dataArray);
-        console.log(percentageChangeArray)
-        if (Object.keys(percentageChangeArray).length > 0) {
+        console.log('TVL')
+        const tvlPrisms: any = this.aggregateTVLByPrism(prisms)
+
+        const newStat = new Stat({ 
+          moon_period: getPriceWithDeviation(), 
+          aspects: [['1','X','0']], 
+          time_type: '1hr', 
+          tvl: {
+            str : tvlPrisms.Strength, 
+            agi: tvlPrisms.Agility, 
+            wis: tvlPrisms.Wisdom, 
+            hrt: tvlPrisms.Heart, 
+            int: tvlPrisms.Intellect
+          }
+        });
+        console.log(await newStat.save())
+
+          const all = await Stat.find(
+            { time_type: '1hr' }, null, { sort: { createdAt: -1 }, limit: 2 },
+          );
+
+        if(all.length >= 2){
+
+        const calculatePercentageChange = (currentValue, previousValue) => {
+            if (previousValue !== 0) {
+                return ((currentValue - previousValue) / previousValue) * 100;
+            } else {
+                return 0;
+            }
+        };
+    
+        const result = {
+            tvl: {
+                str: calculatePercentageChange(all[0].tvl.str, all[1].tvl.str),
+                agi: calculatePercentageChange(all[0].tvl.agi, all[1].tvl.agi),
+                wis: calculatePercentageChange(all[0].tvl.wis, all[1].tvl.wis),
+                hrt: calculatePercentageChange(all[0].tvl.hrt, all[1].tvl.hrt),
+                int: calculatePercentageChange(all[0].tvl.int, all[1].tvl.int),
+            },
+        };
+          console.log(this.numbers)
           this.numbers.map((number: string) => {
             const table = `
                 Attribute   |   Average Change
             -----------|------------------
-              Strength  |     ${percentageChangeArray.Strength.averageChange}%
-              Agility       |     ${percentageChangeArray.Agility.averageChange}%
-              Wisdom   |     ${percentageChangeArray.Wisdom.averageChange}%
-              Heart        |     ${percentageChangeArray.Heart.averageChange}%
-              Intellect    |     ${percentageChangeArray.Intellect.averageChange}%
+              Strength  |     ${result.tvl.str}%
+              Agility       |     ${result.tvl.agi}%
+              Wisdom   |     ${result.tvl.wis}%
+              Heart        |     ${result.tvl.hrt}%
+              Intellect    |     ${result.tvl.int}%
+            
+              If you've recieved this message by mistake reach out to mm@horizon.io
             `;
             this.client.messages
               .create({
@@ -47,6 +127,7 @@ class SkyHealth {
               .then((message: any) => console.log(message.sid));
           })
         }
+
       }catch(err: any){
         console.log('an error occured')
         console.log(err)
