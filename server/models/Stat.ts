@@ -11,6 +11,16 @@ const statSchema = new mongoose.Schema({
         hrt: Number,
         int: Number
     },
+    tvl_elements: {
+        air: Number,
+        dark: Number, 
+        fire: Number,
+        earth: Number,
+        light: Number,
+        metal: Number,
+        mind: Number,
+        water: Number
+    },
     createdAt: {
         type: Date,
         default: Date.now

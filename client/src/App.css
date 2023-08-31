@@ -123,6 +123,12 @@ h3 {
   color: #c4adee;
 }
 
+span {
+  text-align: center;
+  font-size: 17px;
+  color: #c4adee;
+}
+
 .iyKoKa {
   transition: filter 0.3s ease-in-out 0s;
     clip-path: polygon(0% 0%, calc(100% - 10px) 0%, 100% 10px, 100% 100%, 10px 100%, 0% calc(100% - 10px));

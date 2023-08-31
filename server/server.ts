@@ -38,7 +38,7 @@ const sky = new SkyHealth({
     from: process.env.TWILIO_FROM
 })
 
-sky.start(["+16479140157"], 60000*5)
+sky.start([], 60000*60)
 
 const fullStream = db.createReadStream();
 
@@ -50,7 +50,7 @@ const fullStream = db.createReadStream();
     }
 })();
 
-const isValidPhoneNumber = (phoneNumber) => {
+const isValidPhoneNumber = (phoneNumber: string) => {
     const phoneRegex = /^(\+1)?\d{3}\d{3}\d{4}$/;
     return phoneRegex.test(phoneNumber);
 };
@@ -65,9 +65,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json())
 
-const ethauthproofandnumber = (req, res, next) => {
+const ethauthproofandnumber = async (req: any, res: any, next: any) => {
     console.log('Middleware executed');
-    if(isValidPhoneNumber(req.body.number) && auth(req.body.wallet, req.body.ethAuthProofString)){
+    if(isValidPhoneNumber(req.body.number) && await auth(req.body.wallet, req.body.ethAuthProofString)){
         next(); // Call next to pass control to the next middleware
     } else {
         res.send(400)
@@ -86,7 +86,7 @@ app.post('/signUp', ethauthproofandnumber, async (req: any, res: any) => {
     }
 })
 
-app.get('/live', async (req,res) => {
+app.get('/live', async (req: any, res: any) => {
     const all = await Stat.find(
         { time_type: '1hr' }, null, { sort: { createdAt: -1 }, limit: 2 },
     );
@@ -117,11 +117,11 @@ app.get('/live', async (req,res) => {
 
     const result = {
         tvl: {
-            str: calculatePercentageChange(all[0].tvl.str, all[1].tvl.str),
-            agi: calculatePercentageChange(all[0].tvl.agi, all[1].tvl.agi),
-            wis: calculatePercentageChange(all[0].tvl.wis, all[1].tvl.wis),
-            hrt: calculatePercentageChange(all[0].tvl.hrt, all[1].tvl.hrt),
-            int: calculatePercentageChange(all[0].tvl.int, all[1].tvl.int),
+            str: calculatePercentageChange(all[0]!.tvl!.str, all[1]!.tvl!.str),
+            agi: calculatePercentageChange(all[0]!.tvl!.agi, all[1]!.tvl!.agi),
+            wis: calculatePercentageChange(all[0]!.tvl!.wis, all[1]!.tvl!.wis),
+            hrt: calculatePercentageChange(all[0]!.tvl!.hrt, all[1]!.tvl!.hrt),
+            int: calculatePercentageChange(all[0]!.tvl!.int, all[1]!.tvl!.int),
         },
         p_val_moon: {
             // todo: optimize
@@ -130,9 +130,18 @@ app.get('/live', async (req,res) => {
             wis: await calculatePValue(all, 'wis'),
             hrt: await calculatePValue(all, 'hrt'),
             int: await calculatePValue(all, 'int')
+        },
+        tvl_elements: {
+            air: calculatePercentageChange(all[0]!.tvl_elements!.air, all[1]!.tvl_elements!.air!),
+            dark: calculatePercentageChange(all[0]!.tvl_elements!.dark, all[1]!.tvl_elements!.dark!),
+            earth: calculatePercentageChange(all[0]!.tvl_elements!.earth, all[1]!.tvl_elements!.earth!),
+            fire: calculatePercentageChange(all[0]!.tvl_elements!.fire, all[1]!.tvl_elements!.fire!),
+            light: calculatePercentageChange(all[0]!.tvl_elements!.light, all[1]!.tvl_elements!.light!),
+            metal: calculatePercentageChange(all[0]!.tvl_elements!.metal, all[1]!.tvl_elements!.metal!),
+            mind: calculatePercentageChange(all[0]!.tvl_elements!.mind, all[1]!.tvl_elements!.mind!),
+            water: calculatePercentageChange(all[0]!.tvl_elements!.water, all[1]!.tvl_elements!.water!)
         }
     };
-
     res.send(result);
 })
 
