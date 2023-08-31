@@ -71,7 +71,7 @@ function App() {
 
   const getTVL = async () => {
     try{
-      const res = await fetch('http://localhost:4000/live')
+      const res = await fetch('http://216.128.179.88:4000/live')
       const json = await res.json()
       console.log(json)
 
@@ -117,7 +117,7 @@ function App() {
 
   const submitNumber = async () => {
     console.log(number)
-    const res1 = await fetch("http://localhost:4000/signUp", {
+    const res1 = await fetch("http://216.128.179.88:4000/signUp", {
       method: "POST",
       headers: {
         "content-type": "application/json",
