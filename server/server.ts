@@ -8,7 +8,7 @@ import { auth, signUp } from '.';
 
 dotenv.config();
 
-import { db } from './db'
+// import { db } from './db'
 import mongoose from 'mongoose';
 import { Stat } from './models/Stat'
 import ss from 'simple-statistics'
@@ -40,7 +40,7 @@ const sky = new SkyHealth({
 
 sky.start([], 60000*60)
 
-const fullStream = db.createReadStream();
+// const fullStream = db.createReadStream();
 
 function categorizeValue(input) {
     switch (input) {
@@ -75,10 +75,10 @@ function categorizeValue(input) {
   }
 (async () => {
     // await Stat.deleteMany({}); console.log('cleaned database')
-    for await (const obj of fullStream) {
-        console.log(obj)
-        sky.numbers.push(obj.number)
-    }
+    // for await (const obj of fullStream) {
+    //     console.log(obj)
+    //     sky.numbers.push(obj.number)
+    // }
 })();
 
 const isValidPhoneNumber = (phoneNumber: string) => {
