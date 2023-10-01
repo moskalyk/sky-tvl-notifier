@@ -44,11 +44,11 @@ function getPriceWithDeviation() {
 }
 
 class SkyHealth {
-  client
-  dataArray;
-  metadataClient;
-  from;
-  numbers;
+  client: any;
+  dataArray: any;
+  metadataClient: any;
+  from: any;
+  numbers: any;
 
   constructor({ twilio_sid, twilio_auth_token, from, mode }: any) {
     this.client = twilio(twilio_sid, twilio_auth_token);
@@ -100,7 +100,7 @@ class SkyHealth {
 
         if(all.length >= 2){
 
-        const calculatePercentageChange = (currentValue, previousValue) => {
+        const calculatePercentageChange = (currentValue: any, previousValue: any) => {
             if (previousValue !== 0) {
                 return ((currentValue - previousValue) / previousValue) * 100;
             } else {
@@ -169,7 +169,7 @@ class SkyHealth {
   }
 
   async fitTVLtoElements(tokens: any) {
-    let db = {}
+    let db: any = {}
     tokens.map((token: any) => {
       db[token.tokenId] = {
         tvl: token.totalValueLocked,
@@ -261,7 +261,7 @@ class SkyHealth {
     return db;
   }
 
-  calculatePercentageChange(dataArray) {
+  calculatePercentageChange(dataArray: any) {
     const aggregatedChange: any = {};
   
     for (let i = 1; i < dataArray.length; i++) {
