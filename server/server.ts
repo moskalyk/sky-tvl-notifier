@@ -42,7 +42,7 @@ sky.start([], 60000*60)
 
 // const fullStream = db.createReadStream();
 
-function categorizeValue(input) {
+function categorizeValue(input: any) {
     switch (input) {
       case "str":
       case "agi":
@@ -125,7 +125,7 @@ app.get('/live', async (req: any, res: any) => {
         res.status(400).send("Not enough data to calculate average change.");
         return;
     }
-    const calculatePercentageChange = (currentValue, previousValue) => {
+    const calculatePercentageChange = (currentValue: any, previousValue: any) => {
         if (previousValue !== 0) {
             return ((currentValue - previousValue) / previousValue) * 100;
         } else {
@@ -137,11 +137,11 @@ app.get('/live', async (req: any, res: any) => {
         const all = await Stat.find(
             {}, null, { sort: { createdAt: -1}, limit: 1000 },
         );
-        const tvlValues = all.map(entry => entry.tvl[prism]);
-        const moonPeriodValues = all.map(entry => entry.moon_period);
+        const tvlValues = all.map((entry: any) => entry!.tvl[prism]);
+        const moonPeriodValues = all.map((entry: any) => entry!.moon_period);
         console.log(tvlValues)
         console.log(moonPeriodValues)
-        const p = ss.sampleCorrelation(tvlValues, moonPeriodValues);
+        const p = ss.sampleCorrelation(tvlValues as any, moonPeriodValues as any);
         console.log("sample:", p);
         return p
     }
@@ -181,7 +181,7 @@ app.get('/fire', async (req: any, res: any) => {
         { time_type: '1hr' }, null, { sort: { createdAt: -1 }, limit: 25 },
     );
 
-    let results = {
+    let results: any = {
         tvl_elements: {
             air: [],
             dark: [],
@@ -203,7 +203,7 @@ app.get('/fire', async (req: any, res: any) => {
 
     let shouldBreak = false;
 
-    const calculatePercentageChange = (currentValue, previousValue) => {
+    const calculatePercentageChange = (currentValue: any, previousValue: any) => {
         if (previousValue !== 0) {
             return ((currentValue - previousValue) / previousValue) * 100;
         } else {
@@ -239,43 +239,11 @@ app.get('/fire', async (req: any, res: any) => {
         results.tvl.int.push(calculatePercentageChange(all[i]!.tvl!.int, all[i+1]!.tvl!.int!))
 
     })
-
-    // console.log(results)
-
-    // const result = {
-    //     tvl: {
-    //         str: calculatePercentageChange(all[0]!.tvl!.str, all[1]!.tvl!.str),
-    //         agi: calculatePercentageChange(all[0]!.tvl!.agi, all[1]!.tvl!.agi),
-    //         wis: calculatePercentageChange(all[0]!.tvl!.wis, all[1]!.tvl!.wis),
-    //         hrt: calculatePercentageChange(all[0]!.tvl!.hrt, all[1]!.tvl!.hrt),
-    //         int: calculatePercentageChange(all[0]!.tvl!.int, all[1]!.tvl!.int),
-    //     },
-    //     p_val_moon: {
-    //         // todo: optimize
-    //         str: await calculatePValue(all, 'str'),
-    //         agi: await calculatePValue(all, 'agi'),
-    //         wis: await calculatePValue(all, 'wis'),
-    //         hrt: await calculatePValue(all, 'hrt'),
-    //         int: await calculatePValue(all, 'int')
-    //     },
-    //     tvl_elements: {
-    //         air: calculatePercentageChange(all[0]!.tvl_elements!.air, all[1]!.tvl_elements!.air!),
-    //         dark: calculatePercentageChange(all[0]!.tvl_elements!.dark, all[1]!.tvl_elements!.dark!),
-    //         earth: calculatePercentageChange(all[0]!.tvl_elements!.earth, all[1]!.tvl_elements!.earth!),
-    //         fire: calculatePercentageChange(all[0]!.tvl_elements!.fire, all[1]!.tvl_elements!.fire!),
-    //         light: calculatePercentageChange(all[0]!.tvl_elements!.light, all[1]!.tvl_elements!.light!),
-    //         metal: calculatePercentageChange(all[0]!.tvl_elements!.metal, all[1]!.tvl_elements!.metal!),
-    //         mind: calculatePercentageChange(all[0]!.tvl_elements!.mind, all[1]!.tvl_elements!.mind!),
-    //         water: calculatePercentageChange(all[0]!.tvl_elements!.water, all[1]!.tvl_elements!.water!)
-    //     }
-    // };
-    // res.send(results);
-
-    function cumulativeSumUsingReduce(arr) {
-    return arr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    function cumulativeSumUsingReduce(arr: any) {
+        return arr.reduce((accumulator: any, currentValue: any) => accumulator + currentValue, 0);
     }
 
-    function findKeyWithHighestValue(obj) {
+    function findKeyWithHighestValue(obj: any) {
         let maxKey = null;
         let maxValue = -Infinity;
       
@@ -292,39 +260,7 @@ app.get('/fire', async (req: any, res: any) => {
         return maxKey;
       }
 
-    function calculateValue(data) {
-        const elementTotals = {
-          air: 0,
-          dark: 0,
-          earth: 0,
-          fire: 0,
-          light: 0,
-          metal: 0,
-          mind: 0,
-          water: 0
-        };
-      
-        const tvlTotals = {
-          str: 0,
-          agi: 0,
-          wis: 0,
-          hrt: 0,
-          int: 0
-        };
-
-        const dualTotals = {
-            agi_str: 0,
-            wis_str: 0,
-            hrt_str: 0,
-            int_str: 0,
-            agi_wis: 0,
-            agi_hrt: 0,
-            agi_int: 0,
-            hrt_wis: 0,
-            int_wis: 0,
-            int_hrt: 0
-        }
-      
+    function calculateValue(data: any) {
         // Your original data
         const originalData = [
             "air, wis_str, agi_wis, int_hrt, agi_hrt",
@@ -336,7 +272,7 @@ app.get('/fire', async (req: any, res: any) => {
         ];
       
         // Iterate through each line in the original data
-        const total = {
+        const total: any = {
             0: 0,
             1: 0,
             2: 0,
@@ -385,7 +321,7 @@ app.get('/trend', async (req: any, res: any) => {
         {}, null, { sort: { createdAt: -1}, limit: 24*7 },
     );
 
-    const tvlData = {
+    const tvlData: any = {
       str: [],
       agi: [],
       wis: [],
@@ -395,11 +331,11 @@ app.get('/trend', async (req: any, res: any) => {
 
     all.forEach((stat: any) => {
       const { str, agi, wis, hrt, int } = stat.tvl;
-      tvlData.str.unshift(str);
-      tvlData.agi.unshift(agi);
-      tvlData.wis.unshift(wis);
-      tvlData.hrt.unshift(hrt);
-      tvlData.int.unshift(int);
+      tvlData!.str!.unshift(str);
+      tvlData!.agi!.unshift(agi);
+      tvlData!.wis!.unshift(wis);
+      tvlData!.hrt!.unshift(hrt);
+      tvlData!.int!.unshift(int);
     });
 
     // console.log(tvlData);
